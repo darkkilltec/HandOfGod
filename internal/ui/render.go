@@ -32,7 +32,11 @@ import (
 //   - strings.Repeat zum Bauen der Balken
 //   - saubere Trennung von Darstellung und Logik
 func RenderChart(groups []domain.Group) {
+	const barWidth = 40
+
 	for _, group := range groups {
-		fmt.Printf("%s %s |%s| %d\n", group.Name, group.CurrentWish.Kind, strings.Repeat("#", group.CurrentWish.Urgency), group.CurrentWish.Urgency)
+		filled := group.CurrentWish.Urgency * barWidth / 100
+		bar := strings.Repeat("#", filled) + strings.Repeat(" ", barWidth - filled)
+		fmt.Printf("%-12s %-7s |%s| %3d\n", group.Name, group.CurrentWish.Kind, bar, group.CurrentWish.Urgency)
 	}
 }
