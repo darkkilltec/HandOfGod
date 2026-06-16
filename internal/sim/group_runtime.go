@@ -1,5 +1,8 @@
 package sim
 
+import (
+	"handofgod/internal/domain"
+)
 // Diese Datei enthält das "Leben" einer einzelnen Gruppe: eine Funktion, die
 // als eigene Goroutine läuft (genau eine pro Gruppe). Das ist das Herzstück
 // deines Concurrency-Lernziels.
@@ -34,3 +37,14 @@ package sim
 //   - select / switch, um auf Befehle zu reagieren
 //   - eine Goroutine sauber beenden (Channel schließen, statt sie zu "killen")
 //   - math/rand für Zufall
+func runGroup(g *domain.Group, commands <-chan Command, updates chan<- WishUpdate) {
+	for cmd := range commands {
+		switch cmd {
+		case CmdTick:
+			// neuen dominanten Wunsch bestimmen (z.B. zufällig, abhängig
+			// vom aktuellen Zustand) und per updates an die Welt senden.
+		case CmdStop:
+			return // Goroutine sauber beenden
+		}
+	}
+}

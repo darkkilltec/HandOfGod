@@ -3,6 +3,8 @@
 // wichtigstes Lernziel – echtes Go-Concurrency.
 package sim
 
+import "handofgod/internal/domain"
+
 // Diese Datei definiert die NACHRICHTEN, die über Channels zwischen der Welt
 // und den Gruppen-Goroutines fließen. Eigene, klar benannte Nachrichtentypen
 // machen Nebenläufigkeit verständlich und testbar (statt "nackter" Werte).
@@ -26,3 +28,14 @@ package sim
 //   - Channels als typsichere "Röhren" zwischen Goroutines
 //   - die Richtung des Datenflusses bewusst entwerfen (wer sendet, wer empfängt)
 //   - warum eigene Nachrichtentypen robuster sind als einzelne lose Werte
+type Command int
+
+const (
+	CmdTick Command = iota
+	CmdStop
+)
+
+type WishUpdate struct {
+	GroupName string
+	Wish domain.Wish
+}
