@@ -1,5 +1,8 @@
 package sim
 
+import "handofgod/internal/domain"
+
+
 // Diese Datei ist der ORCHESTRATOR: die "Welt". Sie startet pro Gruppe eine
 // Goroutine, treibt die Zeit über eine Tick-Uhr voran, sammelt die Wünsche ein
 // und PAUSIERT, sobald der Spieler am Zug ist (Tick-gesteuert mit Pause –
@@ -39,3 +42,49 @@ package sim
 //   - Fan-in: viele Gruppen-Channels -> ein Welt-Channel
 //   - sync.WaitGroup, um sauber auf das Ende aller Goroutines zu warten
 //   - Data-Races erkennen und vermeiden (der -race-Detektor)
+
+type World struct {
+	groups []*domain.Group
+	commands []chan Command
+	updates chan WishUpdate
+}
+
+func NewWorld(groups []*domain.Group) *World {
+	w := &World{
+		groups: groups,
+		updates: make(chan WishUpdate),
+	}
+	for range groups {
+		w.commands = append(w.commands, make(chan Command))
+	}
+	return w
+}
+
+func (w *World) Start() {
+	for i, g := range w.groups {
+		go runGroup(g, w.commands[i], w.updates)
+	}
+}
+
+func (w *World) Tick() {
+	for _, c := range w.commands {
+		c <- CmdTick
+	}
+	for range w.groups {
+		<-w.updates
+	}
+}
+
+func (w *World) Stop() {
+	for _, c := range w.commands {
+		c <- CmdStop
+	}
+}
+
+func (w *World) Snapshot() []domain.Group {
+	var snapshot []domain.Group
+	for _, g := range w.groups {
+		snapshot = append(snapshot, *g)
+	}
+	return snapshot
+}

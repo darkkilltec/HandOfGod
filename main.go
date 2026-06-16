@@ -30,13 +30,25 @@ package main
 import (
 	"handofgod/internal/domain"
 	"handofgod/internal/ui"
+	"handofgod/internal/sim"
+	"fmt"
 )
 
 func main() {
-	groups := []domain.Group{
+	groups := []*domain.Group{
 		{Name: "Talbewohner", Faith: 50, CurrentWish: domain.Wish{Kind: domain.WishRain, Urgency: 62}},
 		{Name: "Bergvolk", Faith: 30, CurrentWish: domain.Wish{Kind: domain.WishWar, Urgency: 21}},
 		{Name: "Küstenvolk", Faith: 70, CurrentWish: domain.Wish{Kind: domain.WishTemple, Urgency: 88}},
 	}	
-	ui.RenderChart(groups)
+
+	world := sim.NewWorld(groups)
+	world.Start()
+
+	for round := 1; round <= 5; round++ {
+		world.Tick()
+		fmt.Printf("=== Runde %d ===\n", round)
+		ui.RenderChart(world.Snapshot())
+		fmt.Println()
+	}
+	world.Stop()
 }
