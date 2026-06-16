@@ -29,3 +29,13 @@ type Group struct {
 	Faith   int
 	CurrentWish Wish
 }
+
+func (g *Group) ChangeFaith(delta int) {
+	g.Faith += delta
+	if g.Faith > 100 {
+		g.Faith = 100
+	}
+	if g.Faith < 0 {
+		g.Faith = 0
+	}
+}
