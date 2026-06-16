@@ -42,13 +42,13 @@ func Catalog() []Action {
 	return []Action{
 		{ Name: "Regen schicken", Effect: func(g *domain.Group) { 
 			g.CurrentWish.Urgency = 0 
-			g.Faith += 10 
+			g.ChangeFaith(10)
 		}},
 		{ Name: "Segen", Effect: func(g *domain.Group){
-			g.Faith += 15
+			g.ChangeFaith(15)
 		}},
 		{ Name: "Seuche", Effect: func(g *domain.Group){
-			g.Faith -= 20
+			g.ChangeFaith(-20)
 		}},
 	}
 }
