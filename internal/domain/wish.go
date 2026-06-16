@@ -1,5 +1,7 @@
 package domain
 
+import "math/rand"
+
 // Diese Datei beschreibt, WAS sich eine Gruppe wünscht (Wish) und wie DRINGEND
 // (Urgency). Beide Typen gehören eng zur Group und liegen daher im selben
 // Paket – ein Paket darf aus mehreren Dateien bestehen.
@@ -36,6 +38,7 @@ const (
 	WishTemple
 	WishHarvest
 	WishRiches
+	wishKindCount //Counter for wishes needs to be at the end always, new entries go before this entry
 )
 
 type Wish struct {
@@ -45,4 +48,9 @@ type Wish struct {
 
 func (k WishKind) String() string {
 	return []string{"Regen", "Krieg", "Tempel", "Ernte", "Reichtum"}[k]
+}
+
+// helper function to get a random wish with the maximum number of wishes
+func RandomWishKind() WishKind {
+	return WishKind(rand.Intn(int(wishKindCount)))
 }

@@ -2,6 +2,7 @@ package sim
 
 import (
 	"handofgod/internal/domain"
+	"math/rand"
 )
 // Diese Datei enthält das "Leben" einer einzelnen Gruppe: eine Funktion, die
 // als eigene Goroutine läuft (genau eine pro Gruppe). Das ist das Herzstück
@@ -41,8 +42,14 @@ func runGroup(g *domain.Group, commands <-chan Command, updates chan<- WishUpdat
 	for cmd := range commands {
 		switch cmd {
 		case CmdTick:
-			// neuen dominanten Wunsch bestimmen (z.B. zufällig, abhängig
-			// vom aktuellen Zustand) und per updates an die Welt senden.
+			g.CurrentWish = domain.Wish{
+				Kind: domain.RandomWishKind(),
+				Urgency: rand.Intn(101),
+			}
+			updates <- WishUpdate{
+				GroupName: g.Name,
+				Wish: g.CurrentWish,
+			}
 		case CmdStop:
 			return // Goroutine sauber beenden
 		}
