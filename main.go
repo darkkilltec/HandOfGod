@@ -27,11 +27,16 @@
 //   - Channels, um auf Ereignisse zu warten (<-ch)
 //   - die for-Schleife als Game-Loop
 package main
+import (
+	"handofgod/internal/domain"
+	"handofgod/internal/ui"
+)
 
-// TODO(tutorial): import-Block für die internal-Pakete ergänzen, sobald die
-// ersten Funktionen existieren (domain, action, sim, ui).
-
-// TODO(tutorial): func main() implementieren – siehe Beschreibung oben.
-//
-// Hinweis: Solange es keine func main gibt, lässt sich das Programm noch nicht
-// per `go run .` starten. Das ist gewollt – deine erste Aufgabe im Tutorial.
+func main() {
+	groups := []domain.Group{
+		{Name: "Talbewohner", Faith: 50, CurrentWish: domain.Wish{Kind: domain.WishRain, Urgency: 62}},
+		{Name: "Bergvolk", Faith: 30, CurrentWish: domain.Wish{Kind: domain.WishWar, Urgency: 21}},
+		{Name: "Küstenvolk", Faith: 70, CurrentWish: domain.Wish{Kind: domain.WishTemple, Urgency: 88}},
+	}	
+	ui.RenderChart(groups)
+}

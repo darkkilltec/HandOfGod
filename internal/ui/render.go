@@ -2,7 +2,11 @@
 // der Spielereingaben. Es kennt die Domäne (domain, action), aber NICHT die
 // Nebenläufigkeit – die UI rechnet nichts aus, sie zeigt nur an.
 package ui
-
+import (
+	"fmt"
+	"strings"
+	"handofgod/internal/domain"
+)
 // Diese Datei zeichnet die Ausgabe: das ASCII-Balkendiagramm der Wünsche und
 // das Aktionsmenü.
 //
@@ -27,3 +31,8 @@ package ui
 //   - fmt.Printf mit Formatierung (feste Spaltenbreite: %-12s, %3d ...)
 //   - strings.Repeat zum Bauen der Balken
 //   - saubere Trennung von Darstellung und Logik
+func RenderChart(groups []domain.Group) {
+	for _, group := range groups {
+		fmt.Printf("%s %s |%s| %d\n", group.Name, group.CurrentWish.Kind, strings.Repeat("#", group.CurrentWish.Urgency), group.CurrentWish.Urgency)
+	}
+}
