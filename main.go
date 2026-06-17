@@ -27,28 +27,49 @@
 //   - Channels, um auf Ereignisse zu warten (<-ch)
 //   - die for-Schleife als Game-Loop
 package main
+
 import (
 	"handofgod/internal/domain"
 	"handofgod/internal/ui"
 	"handofgod/internal/sim"
 	"fmt"
+	"handofgod/internal/action"
 )
 
 func main() {
-	groups := []*domain.Group{
-		{Name: "Talbewohner", Faith: 50, CurrentWish: domain.Wish{Kind: domain.WishRain, Urgency: 62}},
-		{Name: "Bergvolk", Faith: 30, CurrentWish: domain.Wish{Kind: domain.WishWar, Urgency: 21}},
-		{Name: "Küstenvolk", Faith: 70, CurrentWish: domain.Wish{Kind: domain.WishTemple, Urgency: 88}},
-	}	
+    groups := []*domain.Group{
+        {Name: "Talbewohner", Faith: 50, CurrentWish: domain.Wish{Kind: domain.WishRain, Urgency: 62}},
+        {Name: "Bergvolk", Faith: 30, CurrentWish: domain.Wish{Kind: domain.WishWar, Urgency: 21}},
+        {Name: "Küstenvolk", Faith: 70, CurrentWish: domain.Wish{Kind: domain.WishTemple, Urgency: 88}},
+    }
 
-	world := sim.NewWorld(groups)
-	world.Start()
+    actions := action.Catalog()
 
-	for round := 1; round <= 5; round++ {
-		world.Tick()
-		fmt.Printf("=== Runde %d ===\n", round)
-		ui.RenderChart(world.Snapshot())
-		fmt.Println()
-	}
-	world.Stop()
+    world := sim.NewWorld(groups)
+    world.Start()
+    defer world.Stop()
+
+    for {
+        fmt.Println("\n=== Deine Welt ===")
+        ui.RenderChart(world.Snapshot())
+
+        fmt.Println("\nAktionen:")
+        fmt.Println("  0) Beenden")
+        for i, a := range actions {
+            fmt.Printf("  %d) %s\n", i+1, a.Name)
+        }
+        choice := ui.ReadInt("Welche Aktion? ", 0, len(actions))
+        if choice == 0 {
+            break
+        }
+
+        fmt.Println("Auf welche Gruppe?")
+        for i, g := range groups {
+            fmt.Printf("  %d) %s\n", i+1, g.Name)
+        }
+        target := ui.ReadInt("Gruppe? ", 1, len(groups))
+
+        action.Apply(actions[choice-1], groups[target-1])
+        world.Tick()
+    }
 }

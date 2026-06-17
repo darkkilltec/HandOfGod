@@ -1,5 +1,13 @@
 package ui
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
 // Diese Datei liest die Eingaben des Spielers von der Tastatur (stdin) und
 // prüft sie auf Gültigkeit.
 //
@@ -19,3 +27,18 @@ package ui
 //   - Gos Fehler-Idiom: Funktionen geben (Wert, error) zurück; der Aufrufer
 //     prüft `if err != nil { ... }`
 //   - Eingabe-Validierung in einer Schleife
+func ReadInt(prompt string, min, max int) int {
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Print(prompt)
+		line, _ := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+
+		n, err := strconv.Atoi(line)
+		if err != nil || n < min || n > max {
+			fmt.Printf("Bitte eine Zahl zwischen %d und %d eingeben: ", min, max)
+			continue
+		}
+		return n
+	}
+}

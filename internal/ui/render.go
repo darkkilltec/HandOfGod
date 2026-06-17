@@ -37,6 +37,6 @@ func RenderChart(groups []domain.Group) {
 	for _, group := range groups {
 		filled := group.CurrentWish.Urgency * barWidth / 100
 		bar := strings.Repeat("#", filled) + strings.Repeat(" ", barWidth - filled)
-		fmt.Printf("%-12s %-9s |%s| %3d\n", group.Name, group.CurrentWish.Kind, bar, group.CurrentWish.Urgency)
+		fmt.Printf("%-12s %-9s |%s| %3d   Glaube:%3d\n", group.Name, group.CurrentWish.Kind, bar, group.CurrentWish.Urgency, group.Faith)
 	}
 }
