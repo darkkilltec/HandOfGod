@@ -42,9 +42,14 @@ func runGroup(g *domain.Group, commands <-chan Command, updates chan<- WishUpdat
 	for cmd := range commands {
 		switch cmd {
 		case CmdTick:
+			urgency := rand.Intn(101)        // Grund-Zufall 0..100
+			urgency += (100 - g.Faith) / 2   // wenig Glaube -> mehr Druck (bis +50)
+			if urgency > 100 {
+				urgency = 100
+			}
 			g.CurrentWish = domain.Wish{
 				Kind: domain.RandomWishKind(),
-				Urgency: rand.Intn(101),
+				Urgency: urgency,
 			}
 			updates <- WishUpdate{
 				GroupName: g.Name,
